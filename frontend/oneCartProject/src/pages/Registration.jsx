@@ -1,15 +1,15 @@
 import {useContext, useState} from "react";
-import VcartLogo from "/Images/vcartLogo.png";
-import GoogleLogo from "/Images/google.webp"; // Assuming you have a Google logo image in the Images folder
+import VcartLogo from "../assets/vcartLogo.png";
+import GoogleLogo from "../assets/google.webp"; // Assuming you have a Google logo image in the Images folder
 import { useNavigate } from "react-router-dom";
 import { IoEyeOutline, IoEyeOffSharp } from "react-icons/io5";
 import { AuthDataContext } from "../context/authContext"; // Importing the context
+import { userDataContext } from "../context/userContext"; // Importing user context
 import axios from "axios";
 import { auth, provider } from "../utils/firebase.js"; // Importing Firebase auth and provider
 import { signInWithPopup } from "firebase/auth"; // Importing signInWithPopup
 
 function Registration() {
-  
   const [show, setShow] = useState(false);
 
   const [name,setName] = useState("");
@@ -17,6 +17,7 @@ function Registration() {
   const [password,setPassword] = useState("");
 
   const {serverURL} = useContext(AuthDataContext);
+  const {getCurrentUser} = useContext(userDataContext);
 
   const handleSignUp = async(e) =>{
     e.preventDefault();
@@ -25,6 +26,8 @@ function Registration() {
         {name, email, password},{withCredentials: true} // This is important to send cookies with the request
       ); 
       console.log("Registration successful:", result);
+      getCurrentUser();
+      navigate("/");                                    // Redirect to home page after successful registration
     }catch(err)
     {
       console.error("Error during registration:", err);
@@ -38,6 +41,8 @@ const googleSignup = async () => {
         let email = response.user.email;
         const result = await axios.post(`${serverURL}/api/googleLogin`, {name, email}, { withCredentials: true });
         console.log("Google sign-in successful:", result);
+        getCurrentUser();
+        navigate("/");  
     } catch (error) {
       console.error("Google sign-in failed:", error);
     }

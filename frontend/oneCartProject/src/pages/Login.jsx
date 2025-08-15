@@ -1,9 +1,10 @@
 import React,{useState, useContext} from "react";
-import VcartLogo from "/Images/vcartLogo.png";
-import GoogleLogo from "/Images/google.webp"; // Assuming you have a Google logo image in the Images folder
+import VcartLogo from "../assets/vcartLogo.png";
+import GoogleLogo from "../assets/google.webp"; // Assuming you have a Google logo image in the Images folder
 import { useNavigate } from "react-router-dom";
 import { IoEyeOutline, IoEyeOffSharp } from "react-icons/io5";
 import { AuthDataContext } from "../context/authContext"; // Importing the context
+import { userDataContext } from "../context/userContext"; // Importing user context
 import axios from "axios";
 import { signInWithPopup } from "firebase/auth"; // Importing signInWithPopup
 import { auth, provider } from "../utils/firebase.js"; // Importing Firebase auth and provider
@@ -12,15 +13,16 @@ function Login() {
   const [show, setShow] = useState(false);
   let [email, setEmail] = useState("");
   let [password, setPassword] = useState("");
+  
   const {serverURL} = useContext(AuthDataContext);
+  const {getCurrentUser} = useContext(userDataContext);
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    console.log("Login Attempt:", { email, password });
-    console.log("Server URL:", serverURL);
-    let result = await axios.post(`${serverURL}/api/login`,{email, password}, {withCredentials: true});  
-
-    console.log(result);
+    await axios.post(`${serverURL}/api/login`,{email, password}, {withCredentials: true}); 
+    console.log("Login successful"); 
+    getCurrentUser();
+    navigate("/");   
   }
 
   const googleLogin = async () => {
@@ -30,6 +32,8 @@ function Login() {
           let email = response.user.email;
           const result = await axios.post(`${serverURL}/api/googleLogin`, {name, email}, { withCredentials: true });
           console.log("Google sign-in successful:", result);
+          getCurrentUser();
+          navigate("/");  
       } catch (error) {
         console.error("Google sign-in failed:", error);
       }
@@ -59,7 +63,7 @@ function Login() {
                 >
                   <div className="w-[90%] h-[50px] bg-[#42656cae] rounded-lg flex items-center justify-center gap-[10px] py-[20px] cursor-pointer" onClick={googleLogin}>
                     <img className="w-[20px]" src={GoogleLogo} alt="" />
-                    Registration with Google
+                    Login account with Google
                   </div>
                   <div className="w-[100%] h-[20px] flex item-center justify-center gap-[10px]">
                     <div className="w-[40%] h-[1px] bg-[#96969635] mt-3"></div>OR
