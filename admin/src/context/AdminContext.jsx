@@ -5,7 +5,7 @@ import { authDataContext } from "./AuthContext";
 import axios from "axios";
 import { useEffect } from "react";
 
-export const adminDataContext = createContext();
+export const AdminDataContext = createContext();
 
 function AdminContext({ children }) {
   let [adminData, setAdminData] = useState(null);
@@ -13,10 +13,11 @@ function AdminContext({ children }) {
 
   const getAdmin = async () => {
     try {
-      let result = await axios.get(`${serverURL}/getadmin`, {
+      let result = await axios.get(`${serverURL}/admin/getadmin`, {
         withCredentials: true,
       });
       setAdminData(result.data);
+      console.log("Admin Mil rha ha :", result.data);
     } catch (error) {
       console.log(error);
       setAdminData(null);
@@ -28,13 +29,15 @@ function AdminContext({ children }) {
   }, []);
 
   const value = {
-    adminData, setAdminData, getAdmin
-  }
+    adminData,
+    setAdminData,
+    getAdmin,
+  };
   return (
     <div>
-      <adminDataContext.Provider value={value}>
+      <AdminDataContext.Provider value={value}>
         {children}
-      </adminDataContext.Provider>
+      </AdminDataContext.Provider>
     </div>
   );
 }

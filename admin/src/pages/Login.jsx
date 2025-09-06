@@ -3,13 +3,18 @@ import VcartLogo from "../assets/vcartLogo.png";
 import { IoEyeOutline, IoEyeOffSharp } from "react-icons/io5";
 import axios from "axios";
 import { authDataContext } from "../context/AuthContext";
+import { AdminDataContext } from "../context/AdminContext";
 import { useNavigate } from "react-router-dom";
 
 function Login() {
   const [show, setShow] = useState(false);
   let [email, setEmail] = useState("");
   let [password, setPassword] = useState("");
+  
   const { serverURL } = useContext(authDataContext);
+  
+  let { adminData, getAdmin } = useContext(AdminDataContext);
+
   const navigate = useNavigate();
 
   const AdminLogin = async (e) => {
@@ -17,6 +22,7 @@ function Login() {
     try {
       const result = await axios.post(`${serverURL}/admin/adminlogin`,{email,password}, {withCredentials:true});
       console.log(result.data);
+      getAdmin();
       if(result) navigate("/")
     } catch (error) {
         console.log(error)
@@ -25,7 +31,7 @@ function Login() {
 
   return (
     <>
-      <div className="w-[100vw] h-[100vh] bg-gradient-to-l from-[#141414] to-[#0c2025] text-[white] flex flex-col justify-start items-center ">
+      <div className="w-[100vw] h-[100vh] bg-gradient-to-l from-[#141414] to-[#0c2025] text-[white] flex flex-col justify-start items-center  ">
         <div className="w-[100%] h-[80px] flex items-center justify-start px-[30px] gap-[10px] cursor-pointer">
           <img src={VcartLogo} className="w-[40px]" alt="Logo" />
           <h1 className="text-[22px] font-sans">One Cart</h1>
@@ -36,7 +42,7 @@ function Login() {
             Welcome to OneCart, Apply to Admin Login
           </span>
         </div>
-        <div className="max-w-[600px] w-[90%] h-[400px] bg-[#00000025] border-[1px] border-[#96969635] backdrop:blur-2xl rounded-lg shadow-lg flex items-center justify-center">
+        <div className="max-w-[600px] w-[90%] my-4 h-[400px] bg-[#00000025] border-[1px] border-[#96969635] backdrop:blur-2xl rounded-lg shadow-lg flex items-center justify-center">
           <form
             action=""
             onSubmit={AdminLogin}
