@@ -22,7 +22,7 @@ function Login() {
     try {
       const result = await axios.post(`${serverURL}/admin/adminlogin`,{email,password}, {withCredentials:true});
       console.log(result.data);
-      getAdmin();
+      // getAdmin();
       if(result) navigate("/")
     } catch (error) {
         console.log(error)
